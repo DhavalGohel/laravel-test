@@ -36,7 +36,49 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+        
+        Schema::create('movies', function($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('movie_times', function($table) {
+            $table->increments('id');
+            $table->dateTime('time');
+            $table->integer('movie_id')->unsigned();
+            $table->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');
+            $table->integer('show_administrator_id')->unsigned();
+            $table->foreign('show_administrator_id')->references('id')->on('show_administrators')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('show_administrators', function($table) {
+            $table->increments('id');
+            $table->dateTime('name');
+            $table->timestamps();
+        });
+
+        Schema::create('seatings', function($table) {
+            $table->increments('id');
+            $table->boolean('is_vip');
+            $table->integer('show_administrator_id')->unsigned()->nullable();
+            $table->foreign('show_administrator_id')->references('id')->on('show_administrator_id');
+            $table->timestamps();
+        });
+
+        Schema::create('prices', function($table) {
+            $table->increments('id');
+            $table->double('price');
+            $table->integer('seating_id')->unsigned()->nullable();
+            $table->foreign('seating_id')->references('id')->on('seatings');
+            $table->integer('show_administrator_id')->unsigned()->nullable();
+            $table->foreign('show_administrator_id')->references('id')->on('show_administrators');
+            $table->integer('movie_time_id')->unsigned()->nullable();
+            $table->foreign('movie_times')->references('id')->on('movie_times');
+            $table->timestamps();
+        });
+        // throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
     }
 
     /**
